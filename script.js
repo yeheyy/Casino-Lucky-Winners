@@ -1,51 +1,84 @@
-document.getElementById('toggleAdminBtn').addEventListener('click', function () {
-  const uploadSection = document.getElementById('upload-section');
-  const isVisible = uploadSection.style.display === 'block';
+if (document.getElementById("loginBtn")) {
+  const loginBtn = document.getElementById("loginBtn");
+  const loginModal = document.getElementById("loginModal");
+  const closeModal = document.getElementById("closeModal");
+  const submitLogin = document.getElementById("submitLogin");
 
-  uploadSection.style.display = isVisible ? 'none' : 'block';
-  this.innerText = isVisible ? 'Admin Mode' : 'Exit Admin Mode';
-});
+  loginBtn.onclick = () => loginModal.style.display = "block";
+  closeModal.onclick = () => loginModal.style.display = "none";
+  window.onclick = (e) => {
+    if (e.target === loginModal) loginModal.style.display = "none";
+  };
 
-// Posting logic
-document.getElementById('upload-form').addEventListener('submit', function (e) {
-  e.preventDefault();
+  submitLogin.onclick = () => {
+    const username = document.getElementById("loginUsername").value;
+    const password = document.getElementById("loginPassword").value;
 
-  const mediaInput = document.getElementById('media');
-  const name = document.getElementById('name').value.trim();
-  const description = document.getElementById('description').value.trim();
-  const link = document.getElementById('gameLink').value.trim();
-  const role = document.getElementById('role').value;
+    if (username === "admin" && password === "1234") {
+      window.location.href = "admin.html";
+    } else {
+      alert("Invalid credentials.");
+    }
+  };
+}
 
-  const file = mediaInput.files[0];
-  if (!file || !name || !description || !link || !role) {
-    alert("Paki-fill out lahat ng fields.");
-    return;
-  }
+// UPLOAD (admin.html only)
+if (document.getElementById("upload-form")) {
+  document.getElementById('upload-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const media = document.getElementById('media').files[0];
+    const description = document.getElementById('description').value;
+    const link = document.getElementById('gameLink').value;
 
-  const fileURL = URL.createObjectURL(file);
-  const isVideo = file.type.startsWith('video');
+    if (!media) return alert("Mag-upload muna ng file.");
 
-  const postContainer = document.createElement('div');
-  postContainer.className = 'post';
+    const reader = new FileReader();
+    reader.onload = function () {
+      const dataURL = reader.result;
+      const post = {
+        url: dataURL,
+        type: media.type.startsWith("video") ? "video" : "image",
+        description,
+        link
+      };
 
-  const mediaElement = document.createElement(isVideo ? 'video' : 'img');
-  mediaElement.src = fileURL;
-  if (isVideo) mediaElement.controls = true;
-  mediaElement.style.width = '100%';
-  mediaElement.style.borderRadius = '8px';
+      const existing = JSON.parse(localStorage.getItem("casinoPosts") || "[]");
+      existing.unshift(post);
+      localStorage.setItem("casinoPosts", JSON.stringify(existing));
 
-  const desc = document.createElement('p');
-  desc.innerText = description;
+      alert("Na-save na!");
+      document.getElementById('upload-form').reset();
+    };
+    reader.readAsDataURL(media);
+  });
+}
 
-  const linkEl = document.createElement('a');
-  linkEl.href = link;
-  linkEl.target = '_blank';
-  linkEl.innerText = 'Tingnan kung saan siya nanalo';
+// DISPLAY POSTS (index.html only)
+if (document.getElementById("posts-container")) {
+  const posts = JSON.parse(localStorage.getItem("casinoPosts") || "[]");
+  const container = document.getElementById("posts-container");
 
-  postContainer.appendChild(mediaElement);
-  postContainer.appendChild(desc);
-  postContainer.appendChild(linkEl);
+  posts.forEach(post => {
+    const div = document.createElement("div");
+    div.className = "post";
 
-  document.getElementById('posts-container').appendChild(postContainer);
-  this.reset();
-});
+    const media = document.createElement(post.type === "video" ? "video" : "img");
+    media.src = post.url;
+    if (post.type === "video") media.controls = true;
+
+    const desc = document.createElement("p");
+    desc.innerText = post.description;
+
+    const a = document.createElement("a");
+    a.href = post.link;
+    a.target = "_blank";
+    a.innerText = "Tingnan kung saan siya nanalo";
+
+    div.appendChild(media);
+    div.appendChild(desc);
+    div.appendChild(a);
+    container.appendChild(div);
+  });
+}
+Sent
+Write to
