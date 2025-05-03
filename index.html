@@ -1,32 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Casino Champions</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="hero">
+  <section class="hero">
     <h1>Casino Champions</h1>
     <p>Mga kamakailang panalo ng ating players at agents!</p>
-    <button id="loginBtn" class="login-btn">Login</button>
-  </header>
+    <button class="login-btn" onclick="window.location.href='admin.html'">Login</button>
+  </section>
 
   <section id="gallery">
     <h2>Latest Wins</h2>
-    <div class="grid" id="posts-container"></div>
-  </section>
-
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <span class="close" id="closeModal">&times;</span>
-      <h2>Admin Login</h2>
-      <input type="text" id="loginUsername" placeholder="Username" />
-      <input type="password" id="loginPassword" placeholder="Password" />
-      <button id="submitLogin">Login</button>
+    <div class="grid" id="latest-posts">
+      <!-- Posts will appear here -->
     </div>
-  </div>
+  </section>
 
   <script src="script.js"></script>
 </body>
