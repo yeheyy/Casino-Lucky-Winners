@@ -3,41 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Casino Champions</title>
+  <title>Casino Champions - Wins</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
     <h1>Casino Champions</h1>
-    <p>Ipinagmamalaki ang ating mga nanalo at top agents!</p>
-    <button id="toggleAdminBtn">Admin Mode</button>
+    <p>Mga kamakailang panalo ng ating players at agents!</p>
   </header>
 
-  <!-- ADMIN-ONLY SECTION -->
-  <section id="upload-section" style="display: none;">
-    <h2>I-upload ang Proof</h2>
-    <form id="upload-form">
-      <input type="file" id="media" accept="image/*,video/*" required />
-      <input type="text" id="name" placeholder="Pangalan (Player o Agent)" required />
-      <textarea id="description" placeholder="Ilagay ang maikling kwento ng panalo..." required></textarea>
-      <input type="url" id="gameLink" placeholder="Link kung saan siya nanalo" required />
-      <select id="role" required>
-        <option value="">Piliin ang Role</option>
-        <option value="Player">Player</option>
-        <option value="Agent">Agent</option>
-      </select>
-      <button type="submit">I-post!</button>
-    </form>
-  </section>
-
-  <!-- PUBLIC GALLERY -->
   <section id="gallery">
     <h2>Latest Wins</h2>
-    <div class="grid" id="posts-container">
-      <!-- Posts will appear here -->
-    </div>
+    <div class="grid" id="posts-container"></div>
   </section>
 
-  <script src="script.js"></script>
+  <script>
+    // Load posts from localStorage
+    const posts = JSON.parse(localStorage.getItem("casinoPosts") || "[]");
+    const container = document.getElementById('posts-container');
+
+    posts.forEach(post => {
+      const div = document.createElement('div');
+      div.className = 'post';
+      const media = post.type === 'video'
+        ? <video controls src="${post.url}"></video>
+        : <img src="${post.url}" alt="Proof" />;
+      div.innerHTML = `
+        ${media}
+        <p>${post.description}</p>
+        <a href="${post.link}" target="_blank">Tingnan kung saan siya nanalo</a>
+      `;
+      container.appendChild(div);
+    });
+  </script>
 </body>
 </html>
