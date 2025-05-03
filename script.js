@@ -13,7 +13,6 @@ if (document.getElementById("loginBtn")) {
   submitLogin.onclick = () => {
     const username = document.getElementById("loginUsername").value;
     const password = document.getElementById("loginPassword").value;
-
     if (username === "admin" && password === "1234") {
       window.location.href = "admin.html";
     } else {
@@ -22,13 +21,13 @@ if (document.getElementById("loginBtn")) {
   };
 }
 
-// UPLOAD (admin.html only)
+// Upload post (admin.html)
 if (document.getElementById("upload-form")) {
-  document.getElementById('upload-form').addEventListener('submit', function (e) {
+  document.getElementById("upload-form").addEventListener("submit", function (e) {
     e.preventDefault();
-    const media = document.getElementById('media').files[0];
-    const description = document.getElementById('description').value;
-    const link = document.getElementById('gameLink').value;
+    const media = document.getElementById("media").files[0];
+    const description = document.getElementById("description").value;
+    const link = document.getElementById("gameLink").value;
 
     if (!media) return alert("Mag-upload muna ng file.");
 
@@ -47,13 +46,13 @@ if (document.getElementById("upload-form")) {
       localStorage.setItem("casinoPosts", JSON.stringify(existing));
 
       alert("Na-save na!");
-      document.getElementById('upload-form').reset();
+      document.getElementById("upload-form").reset();
     };
     reader.readAsDataURL(media);
   });
 }
 
-// DISPLAY POSTS (index.html only)
+// Load posts on index.html
 if (document.getElementById("posts-container")) {
   const posts = JSON.parse(localStorage.getItem("casinoPosts") || "[]");
   const container = document.getElementById("posts-container");
@@ -80,5 +79,3 @@ if (document.getElementById("posts-container")) {
     container.appendChild(div);
   });
 }
-Sent
-Write to
