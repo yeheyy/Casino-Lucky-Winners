@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Winners & Agents</title>
+  <title>Casino Champions</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
     <h1>Casino Champions</h1>
     <p>Ipinagmamalaki ang ating mga nanalo at top agents!</p>
+    <button id="toggleAdminBtn">Admin Mode</button>
   </header>
 
-  <section id="upload-section">
+  <!-- ADMIN-ONLY SECTION -->
+  <section id="upload-section" style="display: none;">
     <h2>I-upload ang Proof</h2>
     <form id="upload-form">
       <input type="file" id="media" accept="image/*,video/*" required />
@@ -28,6 +30,7 @@
     </form>
   </section>
 
+  <!-- PUBLIC GALLERY -->
   <section id="gallery">
     <h2>Latest Wins</h2>
     <div class="grid" id="posts-container">
