@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Casino Champions - Admin</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Admin Panel</h1>
+    <p>I-post ang mga panalo ng players o agents</p>
+    <a href="index.html" style="color:#ffc107;">View Public Page</a>
+  </header>
+
+  <section id="upload-section">
+    <form id="upload-form">
+      <input type="file" id="media" accept="image/*,video/*" required />
+      <input type="text" id="name" placeholder="Pangalan" required />
+      <textarea id="description" placeholder="Kwento ng panalo..." required></textarea>
+      <input type="url" id="gameLink" placeholder="Link ng pagkapanalo" required />
+      <select id="role" required>
+        <option value="">Piliin ang Role</option>
+        <option value="Player">Player</option>
+        <option value="Agent">Agent</option>
+      </select>
+      <button type="submit">I-post!</button>
+    </form>
+  </section>
+
+  <script>
+    document.getElementById('upload-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const media = document.getElementById('media').files[0];
+      const description = document.getElementById('description').value;
+      const link = document.getElementById('gameLink').value;
+
+      if (!media) return alert("Mag-upload muna ng photo o video.");
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const dataURL = reader.result;
+        const type = media.type.startsWith("video") ? "video" : "image";
+
+        const newPost = {
+          url: dataURL,
+          type,
+          description,
+          link
+        };
+
+        const existing = JSON.parse(localStorage.getItem("casinoPosts") || "[]");
+        existing.unshift(newPost);
+        localStorage.setItem("casinoPosts", JSON.stringify(existing));
+        alert("Na-post na!");
+        document.getElementById('upload-form').reset();
+      };
+      reader.readAsDataURL(media);
+    });
+  </script>
+</body>
+</html>
