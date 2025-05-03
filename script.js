@@ -2,33 +2,32 @@ document.getElementById('upload-form').addEventListener('submit', function (e) {
   e.preventDefault();
 
   const mediaInput = document.getElementById('media');
-  const name = document.getElementById('name').value;
-  const description = document.getElementById('description').value;
-  const link = document.getElementById('gameLink').value;
+  const name = document.getElementById('name').value.trim();
+  const description = document.getElementById('description').value.trim();
+  const link = document.getElementById('gameLink').value.trim();
   const role = document.getElementById('role').value;
 
+  if (!mediaInput.files.length || !name || !description || !link || !role) {
+    alert("Paki-fill out lahat ng fields at mag-upload ng media.");
+    return;
+  }
+
   const file = mediaInput.files[0];
-  if (!file) return;
+  const fileURL = URL.createObjectURL(file);
+  const isVideo = file.type.startsWith('video');
 
   const postContainer = document.createElement('div');
   postContainer.className = 'post';
 
-  const fileURL = URL.createObjectURL(file);
-  const isVideo = file.type.startsWith('video');
-
-  const mediaElement = isVideo
-    ? <video controls src="${fileURL}"></video>
-    : <img src="${fileURL}" alt="Proof">;
-
   postContainer.innerHTML = `
-    ${mediaElement}
+    ${isVideo ? <video controls src="${fileURL}"></video> : `<img src="${fileURL}" alt="Proof">`}
     <h3>${name} (${role})</h3>
     <p>${description}</p>
     <a href="${link}" target="_blank">Tingnan kung saan siya nanalo</a>
   `;
 
-  document.getElementById('posts-container').prepend(postContainer);
+  const postsContainer = document.getElementById('posts-container');
+  postsContainer.prepend(postContainer);
 
-  // Reset form
   this.reset();
 });
