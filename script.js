@@ -8,25 +8,48 @@ document.getElementById('upload-form').addEventListener('submit', function (e) {
   const role = document.getElementById('role').value;
 
   const file = mediaInput.files[0];
-  if (!file) {
-    alert("Paki-upload muna ng photo o video.");
+  if (!file || !name || !description || !link || !role) {
+    alert("Paki-fill out lahat ng fields.");
     return;
   }
 
   const fileURL = URL.createObjectURL(file);
   const isVideo = file.type.startsWith('video');
 
-  const postHTML = `
-    <div class="post">
-      ${isVideo ? <video controls src="${fileURL}"></video> : `<img src="${fileURL}" alt="Proof">`}
-      <h3>${name} (${role})</h3>
-      <p>${description}</p>
-      <a href="${link}" target="_blank">Tingnan kung saan siya nanalo</a>
-    </div>
-  `;
+  const postContainer = document.createElement('div');
+  postContainer.className = 'post';
+
+  const mediaElement = document.createElement(isVideo ? 'video' : 'img');
+  if (isVideo) {
+    mediaElement.controls = true;
+    mediaElement.src = fileURL;
+  } else {
+    mediaElement.src = fileURL;
+    mediaElement.alt = "Proof of Winning";
+  }
+  mediaElement.style.width = '100%';
+  mediaElement.style.borderRadius = '8px';
+
+  const descriptionElement = document.createElement('p');
+  descriptionElement.innerText = description;
+  descriptionElement.style.marginTop = '1rem';
+  descriptionElement.style.color = '#ddd';
+
+  const linkElement = document.createElement('a');
+  linkElement.href = link;
+  linkElement.target = '_blank';
+  linkElement.innerText = 'Tingnan kung saan siya nanalo';
+  linkElement.style.display = 'block';
+  linkElement.style.marginTop = '0.5rem';
+  linkElement.style.color = '#ff0055';
+  linkElement.style.fontWeight = 'bold';
+
+  postContainer.appendChild(mediaElement);
+  postContainer.appendChild(descriptionElement);
+  postContainer.appendChild(linkElement);
 
   const postsContainer = document.getElementById('posts-container');
-  postsContainer.insertAdjacentHTML('afterbegin', postHTML);
+  postsContainer.appendChild(postContainer); // Sa ibaba ipinopost
 
-  this.reset(); // Clear the form
+  this.reset(); // clear form after posting
 });
