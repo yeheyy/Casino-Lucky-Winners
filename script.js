@@ -1,3 +1,12 @@
+document.getElementById('toggleAdminBtn').addEventListener('click', function () {
+  const uploadSection = document.getElementById('upload-section');
+  const isVisible = uploadSection.style.display === 'block';
+
+  uploadSection.style.display = isVisible ? 'none' : 'block';
+  this.innerText = isVisible ? 'Admin Mode' : 'Exit Admin Mode';
+});
+
+// Posting logic
 document.getElementById('upload-form').addEventListener('submit', function (e) {
   e.preventDefault();
 
@@ -20,36 +29,23 @@ document.getElementById('upload-form').addEventListener('submit', function (e) {
   postContainer.className = 'post';
 
   const mediaElement = document.createElement(isVideo ? 'video' : 'img');
-  if (isVideo) {
-    mediaElement.controls = true;
-    mediaElement.src = fileURL;
-  } else {
-    mediaElement.src = fileURL;
-    mediaElement.alt = "Proof of Winning";
-  }
+  mediaElement.src = fileURL;
+  if (isVideo) mediaElement.controls = true;
   mediaElement.style.width = '100%';
   mediaElement.style.borderRadius = '8px';
 
-  const descriptionElement = document.createElement('p');
-  descriptionElement.innerText = description;
-  descriptionElement.style.marginTop = '1rem';
-  descriptionElement.style.color = '#ddd';
+  const desc = document.createElement('p');
+  desc.innerText = description;
 
-  const linkElement = document.createElement('a');
-  linkElement.href = link;
-  linkElement.target = '_blank';
-  linkElement.innerText = 'Tingnan kung saan siya nanalo';
-  linkElement.style.display = 'block';
-  linkElement.style.marginTop = '0.5rem';
-  linkElement.style.color = '#ff0055';
-  linkElement.style.fontWeight = 'bold';
+  const linkEl = document.createElement('a');
+  linkEl.href = link;
+  linkEl.target = '_blank';
+  linkEl.innerText = 'Tingnan kung saan siya nanalo';
 
   postContainer.appendChild(mediaElement);
-  postContainer.appendChild(descriptionElement);
-  postContainer.appendChild(linkElement);
+  postContainer.appendChild(desc);
+  postContainer.appendChild(linkEl);
 
-  const postsContainer = document.getElementById('posts-container');
-  postsContainer.appendChild(postContainer); // Sa ibaba ipinopost
-
-  this.reset(); // clear form after posting
+  document.getElementById('posts-container').appendChild(postContainer);
+  this.reset();
 });
