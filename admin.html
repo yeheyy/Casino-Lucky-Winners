@@ -3,59 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Casino Champions - Admin</title>
+  <title>Casino Admin Upload</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
     <h1>Admin Panel</h1>
-    <p>I-post ang mga panalo ng players o agents</p>
-    <a href="index.html" style="color:#ffc107;">View Public Page</a>
+    <p>I-post ang panalo ng mga players o agents.</p>
   </header>
 
-  <section id="upload-section">
+  <section class="upload-section">
     <form id="upload-form">
+      <label for="media">Upload Proof (Photo/Video)</label>
       <input type="file" id="media" accept="image/*,video/*" required />
-      <input type="text" id="name" placeholder="Pangalan" required />
-      <textarea id="description" placeholder="Kwento ng panalo..." required></textarea>
-      <input type="url" id="gameLink" placeholder="Link ng pagkapanalo" required />
-      <select id="role" required>
-        <option value="">Piliin ang Role</option>
-        <option value="Player">Player</option>
-        <option value="Agent">Agent</option>
-      </select>
-      <button type="submit">I-post!</button>
+
+      <label for="description">Description</label>
+      <textarea id="description" placeholder="Ilagay kung paano siya nanalo..." required></textarea>
+
+      <label for="gameLink">Casino Link</label>
+      <input type="url" id="gameLink" placeholder="https://examplecasino.com" required />
+
+      <button type="submit">I-Post</button>
     </form>
   </section>
 
- <script>
-  document.getElementById('upload-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const media = document.getElementById('media').files[0];
-    const description = document.getElementById('description').value;
-    const link = document.getElementById('gameLink').value;
-
-    if (!media) return alert("Mag-upload muna ng file.");
-
-    const reader = new FileReader();
-    reader.onload = function () {
-      const dataURL = reader.result;
-      const post = {
-        url: dataURL,
-        type: media.type.startsWith("video") ? "video" : "image",
-        description,
-        link
-      };
-
-      const existing = JSON.parse(localStorage.getItem("casinoPosts") || "[]");
-      existing.unshift(post);
-      localStorage.setItem("casinoPosts", JSON.stringify(existing));
-
-      alert("Na-save na!");
-      document.getElementById('upload-form').reset();
-    };
-    reader.readAsDataURL(media);
-  });
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
