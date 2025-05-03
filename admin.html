@@ -28,36 +28,34 @@
     </form>
   </section>
 
-  <script>
-    document.getElementById('upload-form').addEventListener('submit', function (e) {
-      e.preventDefault();
+ <script>
+  document.getElementById('upload-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const media = document.getElementById('media').files[0];
+    const description = document.getElementById('description').value;
+    const link = document.getElementById('gameLink').value;
 
-      const media = document.getElementById('media').files[0];
-      const description = document.getElementById('description').value;
-      const link = document.getElementById('gameLink').value;
+    if (!media) return alert("Mag-upload muna ng file.");
 
-      if (!media) return alert("Mag-upload muna ng photo o video.");
-
-      const reader = new FileReader();
-      reader.onload = function () {
-        const dataURL = reader.result;
-        const type = media.type.startsWith("video") ? "video" : "image";
-
-        const newPost = {
-          url: dataURL,
-          type,
-          description,
-          link
-        };
-
-        const existing = JSON.parse(localStorage.getItem("casinoPosts") || "[]");
-        existing.unshift(newPost);
-        localStorage.setItem("casinoPosts", JSON.stringify(existing));
-        alert("Na-post na!");
-        document.getElementById('upload-form').reset();
+    const reader = new FileReader();
+    reader.onload = function () {
+      const dataURL = reader.result;
+      const post = {
+        url: dataURL,
+        type: media.type.startsWith("video") ? "video" : "image",
+        description,
+        link
       };
-      reader.readAsDataURL(media);
-    });
-  </script>
+
+      const existing = JSON.parse(localStorage.getItem("casinoPosts") || "[]");
+      existing.unshift(post);
+      localStorage.setItem("casinoPosts", JSON.stringify(existing));
+
+      alert("Na-save na!");
+      document.getElementById('upload-form').reset();
+    };
+    reader.readAsDataURL(media);
+  });
+</script>
 </body>
 </html>
