@@ -1,21 +1,26 @@
 body {
-  background: #121212;
+  background: #111;
   color: #fff;
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
 }
 
-header {
-  background: #1e1e1e;
-  padding: 2rem;
-  position: relative;
+.hero {
+  background: url('https://i.imgur.com/8ZQ2Jjc.png') center/cover no-repeat;
+  padding: 3rem 1rem;
   text-align: center;
+  position: relative;
 }
 
-h1 {
-  margin: 0;
+.hero h1 {
+  font-size: 3rem;
   color: #ffc107;
+  margin: 0;
+}
+
+.hero p {
+  font-size: 1.2rem;
 }
 
 .login-btn {
@@ -32,12 +37,19 @@ h1 {
 
 #gallery {
   padding: 2rem;
+  text-align: center;
+}
+
+#gallery h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
+  justify-content: center;
 }
 
 .post {
@@ -45,6 +57,7 @@ h1 {
   padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(255,193,7,0.2);
+  text-align: left;
 }
 
 .post img, .post video {
@@ -63,7 +76,7 @@ h1 {
   font-weight: bold;
 }
 
-/* Modal Styles */
+/* Modal */
 .modal {
   display: none;
   position: fixed;
