@@ -17,24 +17,33 @@
     <div class="grid" id="posts-container"></div>
   </section>
 
-  <script>
-    // Load posts from localStorage
-    const posts = JSON.parse(localStorage.getItem("casinoPosts") || "[]");
-    const container = document.getElementById('posts-container');
+<script>
+  const posts = JSON.parse(localStorage.getItem("casinoPosts") || "[]");
+  const container = document.getElementById("posts-container");
 
-    posts.forEach(post => {
-      const div = document.createElement('div');
-      div.className = 'post';
-      const media = post.type === 'video'
-        ? <video controls src="${post.url}"></video>
-        : <img src="${post.url}" alt="Proof" />;
-      div.innerHTML = `
-        ${media}
-        <p>${post.description}</p>
-        <a href="${post.link}" target="_blank">Tingnan kung saan siya nanalo</a>
-      `;
-      container.appendChild(div);
-    });
-  </script>
+  posts.forEach(post => {
+    const div = document.createElement("div");
+    div.className = "post";
+
+    const media = document.createElement(post.type === "video" ? "video" : "img");
+    media.src = post.url;
+    if (post.type === "video") media.controls = true;
+    media.style.width = "100%";
+
+    const desc = document.createElement("p");
+    desc.innerText = post.description;
+
+    const a = document.createElement("a");
+    a.href = post.link;
+    a.target = "_blank";
+    a.innerText = "Tingnan kung saan siya nanalo";
+
+    div.appendChild(media);
+    div.appendChild(desc);
+    div.appendChild(a);
+
+    container.appendChild(div);
+  });
+</script>
 </body>
 </html>
