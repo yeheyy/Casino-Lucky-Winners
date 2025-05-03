@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Winners & Agents</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Casino Champions</h1>
+    <p>Ipinagmamalaki ang ating mga nanalo at top agents!</p>
+  </header>
+
+  <section id="upload-section">
+    <h2>I-upload ang Proof</h2>
+    <form id="upload-form">
+      <input type="file" id="media" accept="image/*,video/*" required />
+      <input type="text" id="name" placeholder="Pangalan (Player o Agent)" required />
+      <textarea id="description" placeholder="Ilagay ang maikling kwento ng panalo..." required></textarea>
+      <input type="url" id="gameLink" placeholder="Link kung saan siya nanalo" required />
+      <select id="role" required>
+        <option value="">Piliin ang Role</option>
+        <option value="Player">Player</option>
+        <option value="Agent">Agent</option>
+      </select>
+      <button type="submit">I-post!</button>
+    </form>
+  </section>
+
+  <section id="gallery">
+    <h2>Latest Wins</h2>
+    <div class="grid" id="posts-container">
+      <!-- Posts will appear here -->
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
