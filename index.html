@@ -6,17 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <title>Admin Page - Manage Testimonies</title>
+    <title>Admin Page - Casino Winners</title>
 </head>
 <body>
     <div class="container">
-        <h1>Manage Casino Winners</h1>
+        <h1>Admin Dashboard</h1>
         <div class="menu">
-            <button onclick="toggleForm()">Add New Winner</button>
+            <a href="visitors.html">Go to Visitors Page</a>
         </div>
-
-        <div class="form-container" id="form-container" style="display: none;">
-            <h2>Add/Edit Winner</h2>
+        <div class="form-container">
+            <h2>Add New Winner</h2>
             <form id="addForm">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required><br>
@@ -27,18 +26,79 @@
                 <label for="referral">Referral Link:</label>
                 <input type="url" id="referral" name="referral" required><br>
 
-                <label>Upload Image:</label><br>
+                <label>Upload Image:</label>
                 <input type="file" id="image" name="image" accept="image/*"><br>
 
-                <button type="submit">Save</button>
+                <button type="submit">Add Content</button>
             </form>
         </div>
 
         <div class="testimonies-grid" id="testimonies-grid">
-            <!-- Content will be rendered here -->
+            <!-- Content will be dynamically rendered here -->
         </div>
     </div>
 
-    <script src="server.js"></script>
+    <script>
+        document.getElementById("addForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const username = document.getElementById("username").value;
+            const description = document.getElementById("description").value;
+            const referral = document.getElementById("referral").value;
+            const imageFile = document.getElementById("image").files[0];
+
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = async function() {
+                    const newContent = {
+                        username: username,
+                        desc: description,
+                        referral: referral,
+                        img: reader.result
+                    };
+
+                    try {
+                        const response = await fetch("/add", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(newContent)
+                        });
+                        if (response.ok) {
+                            alert("Content added successfully!");
+                            window.location.reload();
+                        }
+                    } catch (err) {
+                        console.error("Error adding content: ", err);
+                    }
+                };
+                reader.readAsDataURL(imageFile);
+            }
+        });
+
+        async function loadContent() {
+            try {
+                const response = await fetch("/data.json");
+                const contentData = await response.json();
+                const grid = document.getElementById("testimonies-grid");
+                grid.innerHTML = "";
+
+                contentData.forEach(content => {
+                    grid.innerHTML += `
+                        <div class="testimony">
+                            <img src="${content.img}" alt="Winning Photo">
+                            <h2>${content.username}</h2>
+                            <p>${content.desc}</p>
+                            <a href="${content.referral}" target="_blank">Big Win Here!</a>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading content: ", err);
+            }
+        }
+
+        loadContent();
+    </script>
 </body>
 </html>
