@@ -6,50 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <title>Casino Winners - Home</title>
+    <title>Admin Login</title>
 </head>
 <body>
     <div class="container">
-        <h1>Recent Casino Winners</h1>
-        <div class="menu">
-            <button onclick="window.location.href='login.html'" style="float: right;">Admin Only</button>
+        <h1>Admin Login</h1>
+        <div class="form-container">
+            <form id="loginForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br>
+
+                <button type="submit">Login</button>
+            </form>
         </div>
-        <div class="testimonies-grid" id="testimonies-grid">
-            <!-- Testimonies will be rendered here dynamically -->
-        </div>
-        <button class="show-more" onclick="fetchTestimonies()">Show More</button>
     </div>
 
     <script>
-        const apiUrl = 'http://localhost:3000/testimonies';
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
 
-        async function fetchTestimonies() {
-            try {
-                const response = await fetch(apiUrl);
-                const testimonies = await response.json();
-                renderTestimonies(testimonies);
-            } catch (error) {
-                console.error('Error fetching testimonies:', error);
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (username === "ggyy" && password === "Aa112233*") {
+                window.location.href = "index.html";
+            } else {
+                alert("Invalid username or password!");
             }
-        }
-
-        function renderTestimonies(testimonies) {
-            const grid = document.getElementById("testimonies-grid");
-            grid.innerHTML = "";
-
-            testimonies.forEach((testimony) => {
-                grid.innerHTML += `
-                    <div class="testimony">
-                        <img src="${testimony.img}" alt="Winning Photo">
-                        <h2>${testimony.username}</h2>
-                        <p>${testimony.desc}</p>
-                        <a href="${testimony.referral}" class="cta-link">Big Win Here!</a>
-                    </div>
-                `;
-            });
-        }
-
-        fetchTestimonies();
+        });
     </script>
 </body>
 </html>
