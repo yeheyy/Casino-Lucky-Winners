@@ -2,11 +2,13 @@
     {
         "username": "Player123",
         "img": "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png",
-        "desc": "Nanalo ako sa Lucky Slots!"
+        "desc": "Nanalo ako sa Lucky Slots!",
+        "referral": "#"
     },
     {
         "username": "Agent456",
         "img": "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png",
-        "desc": "Napaka swerte ko sa Big Win Table!"
+        "desc": "Napaka swerte ko sa Big Win Table!",
+        "referral": "#"
     }
 ]
