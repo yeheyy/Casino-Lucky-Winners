@@ -7,10 +7,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <title>Casino Winners - Home</title>
+    <style>
+        .admin-button {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background-color: #ffcc00;
+            color: #000;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .admin-button:hover {
+            background-color: #e0b800;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Recent Casino Winners</h1>
+
+        <button class="admin-button" onclick="window.location.href='login.html'">Admin Only</button>
 
         <div class="testimonies-grid" id="testimonies-grid">
             <!-- Testimonies will be rendered here dynamically -->
@@ -19,28 +40,48 @@
     </div>
 
     <script>
-        const testimonies = [
-            { username: "Player123", img: "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png", desc: "Nanalo ako sa Lucky Slots!" },
-            { username: "Agent456", img: "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png", desc: "Napaka swerte ko sa Big Win Table!" }
-        ];
-
-        let itemsPerPage = 6;
         let currentPage = 1;
+        const itemsPerPage = 6;
+        let testimonies = [];
 
+        // Fetch data from data.json
+        async function fetchTestimonies() {
+            try {
+                const response = await fetch('data.json');
+                testimonies = await response.json();
+                renderTestimonies();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Render testimonies
         function renderTestimonies() {
             const grid = document.getElementById("testimonies-grid");
             grid.innerHTML = "";
 
-            testimonies.forEach((testimony) => {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = currentPage * itemsPerPage;
+            const testimoniesToDisplay = testimonies.slice(startIndex, endIndex);
+
+            testimoniesToDisplay.forEach((testimony) => {
                 grid.innerHTML += `
                     <div class="testimony">
                         <img src="${testimony.img}" alt="Winning Photo">
                         <h2>${testimony.username}</h2>
                         <p>${testimony.desc}</p>
-                        <a href="#" class="cta-link">Big Win Here!</a>
+                        <a href="${testimony.referral}" class="cta-link" target="_blank">Big Win Here!</a>
                     </div>
                 `;
             });
+
+            // Show/hide the Show More button
+            const showMoreButton = document.querySelector(".show-more");
+            if (endIndex >= testimonies.length) {
+                showMoreButton.style.display = "none";
+            } else {
+                showMoreButton.style.display = "block";
+            }
         }
 
         function showMore() {
@@ -48,7 +89,8 @@
             renderTestimonies();
         }
 
-        renderTestimonies();
+        // Fetch and render testimonies on load
+        fetchTestimonies();
     </script>
 </body>
 </html>
