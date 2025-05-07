@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <title>Casino Winners Testimonies - Admin</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Casino Winners' Testimonies - Admin Page</h1>
+        <div class="menu">
+            <button onclick="toggleForm()">Add New Winner</button>
+            <button onclick="window.location.href='visitors.html'">Switch to Visitors Page</button>
+        </div>
+
+        <div class="form-container" id="form-container" style="display: none;">
+            <h2>Add/Edit Winner</h2>
+            <form id="addForm">
+                <input type="hidden" id="editIndex" value="">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br>
+
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea><br>
+
+                <label for="referral">Referral Link:</label>
+                <input type="url" id="referral" name="referral" required><br>
+
+                <label>Upload Images (Max 3):</label><br>
+                <input type="file" id="image1" name="images" accept="image/*"><br>
+                <input type="file" id="image2" name="images" accept="image/*"><br>
+                <input type="file" id="image3" name="images" accept="image/*"><br>
+
+                <button type="submit">Save</button>
+            </form>
+        </div>
+
+        <div class="testimonies-grid" id="testimonies-grid">
+            <!-- Testimonies will be rendered here -->
+        </div>
+        <button class="show-more" onclick="showMore()">Show More</button>
+    </div>
+
+    <script>
+        const testimonies = [
+            { username: "Player123", img: "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png", desc: "Nanalo ako sa Lucky Slots!" },
+            { username: "Agent456", img: "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png", desc: "Napaka swerte ko sa Big Win Table!" }
+        ];
+
+        let itemsPerPage = 6;
+        let currentPage = 1;
+
+        function toggleForm() {
+            const formContainer = document.getElementById("form-container");
+            formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
+            document.getElementById("editIndex").value = "";
+        }
+
+        document.getElementById("addForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const index = document.getElementById("editIndex").value;
+            const username = document.getElementById("username").value;
+            const description = document.getElementById("description").value;
+            const referral = document.getElementById("referral").value;
+
+            const images = [];
+            for (let i = 1; i <= 3; i++) {
+                const fileInput = document.getElementById("image" + i);
+                if (fileInput.files.length > 0) {
+                    images.push(URL.createObjectURL(fileInput.files[0]));
+                }
+            }
+
+            const newTestimony = { username, desc: description, img: images[0] || "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png" };
+
+            if (index) {
+                testimonies[index] = newTestimony;
+            } else {
+                testimonies.unshift(newTestimony);
+            }
+
+            renderTestimonies();
+            e.target.reset();
+            toggleForm();
+        });
+
+        function renderTestimonies() {
+            const grid = document.getElementById("testimonies-grid");
+            grid.innerHTML = "";
+
+            testimonies.forEach((testimony, index) => {
+                grid.innerHTML += `
+                    <div class="testimony">
+                        <img src="${testimony.img}" alt="Winning Photo">
+                        <h2>${testimony.username}</h2>
+                        <p>${testimony.desc}</p>
+                        <a href="#" class="cta-link">Big Win Here!</a>
+                        <button onclick="editTestimony(${index})">Edit</button>
+                        <button onclick="deleteTestimony(${index})">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        function editTestimony(index) {
+            const testimony = testimonies[index];
+            document.getElementById("username").value = testimony.username;
+            document.getElementById("description").value = testimony.desc;
+            document.getElementById("referral").value = "";
+            document.getElementById("editIndex").value = index;
+            toggleForm();
+        }
+
+        function deleteTestimony(index) {
+            testimonies.splice(index, 1);
+            renderTestimonies();
+        }
+
+        function showMore() {
+            currentPage++;
+            renderTestimonies();
+            if (currentPage * itemsPerPage >= testimonies.length) {
+                document.querySelector(".show-more").style.display = "none";
+            }
+        }
+
+        renderTestimonies();
+    </script>
+</body>
+</html>

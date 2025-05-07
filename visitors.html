@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <title>Casino Winners - Home</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Recent Casino Winners</h1>
+
+        <div class="testimonies-grid" id="testimonies-grid">
+            <!-- Testimonies will be rendered here dynamically -->
+        </div>
+        <button class="show-more" onclick="showMore()">Show More</button>
+    </div>
+
+    <script>
+        const testimonies = [
+            { username: "Player123", img: "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png", desc: "Nanalo ako sa Lucky Slots!" },
+            { username: "Agent456", img: "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png", desc: "Napaka swerte ko sa Big Win Table!" }
+        ];
+
+        let itemsPerPage = 6;
+        let currentPage = 1;
+
+        function renderTestimonies() {
+            const grid = document.getElementById("testimonies-grid");
+            grid.innerHTML = "";
+
+            testimonies.forEach((testimony) => {
+                grid.innerHTML += `
+                    <div class="testimony">
+                        <img src="${testimony.img}" alt="Winning Photo">
+                        <h2>${testimony.username}</h2>
+                        <p>${testimony.desc}</p>
+                        <a href="#" class="cta-link">Big Win Here!</a>
+                    </div>
+                `;
+            });
+        }
+
+        function showMore() {
+            currentPage++;
+            renderTestimonies();
+        }
+
+        renderTestimonies();
+    </script>
+</body>
+</html>
