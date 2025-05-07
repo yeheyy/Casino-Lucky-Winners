@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Casino Winners' Testimonies - Admin Page</h1>
+        <h1>Admin - Casino Winners' Testimonies</h1>
         <div class="menu">
             <button onclick="toggleForm()">Add New Winner</button>
             <button onclick="window.location.href='visitors.html'">Switch to Visitors Page</button>
@@ -27,7 +27,7 @@
                 <textarea id="description" name="description" required></textarea><br>
 
                 <label for="referral">Referral Link:</label>
-                <input type="url" id="referral" name="referral" required><br>
+                <input type="url" id="referral" name="referral"><br>
 
                 <label>Upload Images (Max 3):</label><br>
                 <input type="file" id="image1" name="images" accept="image/*"><br>
@@ -41,53 +41,21 @@
         <div class="testimonies-grid" id="testimonies-grid">
             <!-- Testimonies will be rendered here -->
         </div>
-        <button class="show-more" onclick="showMore()">Show More</button>
+        <button class="show-more" onclick="fetchTestimonies()">Show More</button>
     </div>
 
     <script>
-        const testimonies = [
-            { username: "Player123", img: "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png", desc: "Nanalo ako sa Lucky Slots!" },
-            { username: "Agent456", img: "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png", desc: "Napaka swerte ko sa Big Win Table!" }
-        ];
-
-        let itemsPerPage = 6;
-        let currentPage = 1;
-
-        function toggleForm() {
-            const formContainer = document.getElementById("form-container");
-            formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
-            document.getElementById("editIndex").value = "";
+        async function fetchTestimonies() {
+            try {
+                const response = await fetch('data.json');
+                const testimonies = await response.json();
+                renderTestimonies(testimonies);
+            } catch (error) {
+                console.error('Error loading testimonies:', error);
+            }
         }
 
-        document.getElementById("addForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            const index = document.getElementById("editIndex").value;
-            const username = document.getElementById("username").value;
-            const description = document.getElementById("description").value;
-            const referral = document.getElementById("referral").value;
-
-            const images = [];
-            for (let i = 1; i <= 3; i++) {
-                const fileInput = document.getElementById("image" + i);
-                if (fileInput.files.length > 0) {
-                    images.push(URL.createObjectURL(fileInput.files[0]));
-                }
-            }
-
-            const newTestimony = { username, desc: description, img: images[0] || "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png" };
-
-            if (index) {
-                testimonies[index] = newTestimony;
-            } else {
-                testimonies.unshift(newTestimony);
-            }
-
-            renderTestimonies();
-            e.target.reset();
-            toggleForm();
-        });
-
-        function renderTestimonies() {
+        function renderTestimonies(testimonies) {
             const grid = document.getElementById("testimonies-grid");
             grid.innerHTML = "";
 
@@ -97,37 +65,65 @@
                         <img src="${testimony.img}" alt="Winning Photo">
                         <h2>${testimony.username}</h2>
                         <p>${testimony.desc}</p>
-                        <a href="#" class="cta-link">Big Win Here!</a>
-                        <button onclick="editTestimony(${index})">Edit</button>
                         <button onclick="deleteTestimony(${index})">Delete</button>
                     </div>
                 `;
             });
         }
 
-        function editTestimony(index) {
-            const testimony = testimonies[index];
-            document.getElementById("username").value = testimony.username;
-            document.getElementById("description").value = testimony.desc;
-            document.getElementById("referral").value = "";
-            document.getElementById("editIndex").value = index;
-            toggleForm();
-        }
+        document.getElementById("addForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
 
-        function deleteTestimony(index) {
-            testimonies.splice(index, 1);
-            renderTestimonies();
-        }
+            const username = document.getElementById("username").value;
+            const description = document.getElementById("description").value;
+            const images = [];
 
-        function showMore() {
-            currentPage++;
-            renderTestimonies();
-            if (currentPage * itemsPerPage >= testimonies.length) {
-                document.querySelector(".show-more").style.display = "none";
+            for (let i = 1; i <= 3; i++) {
+                const fileInput = document.getElementById("image" + i);
+                if (fileInput.files.length > 0) {
+                    images.push(URL.createObjectURL(fileInput.files[0]));
+                }
+            }
+
+            const newTestimony = {
+                username,
+                desc: description,
+                img: images[0] || "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png"
+            };
+
+            try {
+                const response = await fetch('data.json');
+                const testimonies = await response.json();
+                testimonies.unshift(newTestimony);
+                await saveTestimonies(testimonies);
+                fetchTestimonies();
+                document.getElementById("addForm").reset();
+                toggleForm();
+            } catch (error) {
+                console.error('Error saving testimony:', error);
+            }
+        });
+
+        async function saveTestimonies(testimonies) {
+            try {
+                await fetch('data.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testimonies)
+                });
+            } catch (error) {
+                console.error('Error updating testimonies:', error);
             }
         }
 
-        renderTestimonies();
+        function toggleForm() {
+            const formContainer = document.getElementById("form-container");
+            formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
+        }
+
+        fetchTestimonies();
     </script>
 </body>
 </html>
