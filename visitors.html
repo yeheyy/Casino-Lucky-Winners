@@ -11,27 +11,31 @@
 <body>
     <div class="container">
         <h1>Recent Casino Winners</h1>
+
         <div class="menu" style="text-align: right;">
             <button onclick="window.location.href='login.html'">Admin Only</button>
         </div>
+
         <div class="testimonies-grid" id="testimonies-grid">
             <!-- Testimonies will be rendered here dynamically -->
         </div>
-        <button class="show-more" onclick="fetchTestimonies()">Show More</button>
+        <button class="show-more" onclick="showMore()">Show More</button>
     </div>
 
     <script>
         async function fetchTestimonies() {
             try {
-                const response = await fetch('http://localhost:3000/testimonies');
-                const testimonies = await response.json();
-                renderTestimonies(testimonies);
+                const response = await fetch("data.json");
+                const data = await response.json();
+                return data;
             } catch (error) {
-                console.error('Error loading testimonies:', error);
+                console.error("Error fetching testimonies:", error);
+                return [];
             }
         }
 
-        function renderTestimonies(testimonies) {
+        async function renderTestimonies() {
+            const testimonies = await fetchTestimonies();
             const grid = document.getElementById("testimonies-grid");
             grid.innerHTML = "";
 
@@ -47,7 +51,11 @@
             });
         }
 
-        fetchTestimonies();
+        function showMore() {
+            renderTestimonies();
+        }
+
+        renderTestimonies();
     </script>
 </body>
 </html>
