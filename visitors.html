@@ -6,43 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <title>Casino Winners Testimonies - Login</title>
+    <title>Casino Winners - Home</title>
 </head>
 <body>
     <div class="container">
-        <h1>Admin - Casino Winners' Testimonies</h1>
-        <div class="menu">
-            <button onclick="window.location.href='visitors.html'">Switch to Visitors Page</button>
+        <h1>Recent Casino Winners</h1>
+        <div class="menu" style="text-align: right;">
+            <button onclick="window.location.href='login.html'">Admin Only</button>
         </div>
-
-        <div class="form-container" id="form-container">
-            <h2>Add New Winner</h2>
-            <form id="addForm">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required><br>
-
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" required></textarea><br>
-
-                <label for="referral">Referral Link:</label>
-                <input type="url" id="referral" name="referral"><br>
-
-                <label>Upload Images (Max 1):</label><br>
-                <input type="file" id="image" name="image" accept="image/*"><br>
-
-                <button type="submit">Save</button>
-            </form>
-        </div>
-
         <div class="testimonies-grid" id="testimonies-grid">
-            <!-- Testimonies will be rendered here -->
+            <!-- Testimonies will be rendered here dynamically -->
         </div>
+        <button class="show-more" onclick="fetchTestimonies()">Show More</button>
     </div>
 
     <script>
         async function fetchTestimonies() {
             try {
-                const response = await fetch('data.json');
+                const response = await fetch('http://localhost:3000/testimonies');
                 const testimonies = await response.json();
                 renderTestimonies(testimonies);
             } catch (error) {
@@ -53,56 +34,17 @@
         function renderTestimonies(testimonies) {
             const grid = document.getElementById("testimonies-grid");
             grid.innerHTML = "";
-            testimonies.forEach((testimony, index) => {
+
+            testimonies.forEach((testimony) => {
                 grid.innerHTML += `
                     <div class="testimony">
                         <img src="${testimony.img}" alt="Winning Photo">
                         <h2>${testimony.username}</h2>
                         <p>${testimony.desc}</p>
+                        <a href="#" class="cta-link">Big Win Here!</a>
                     </div>
                 `;
             });
-        }
-
-        document.getElementById("addForm").addEventListener("submit", async function (e) {
-            e.preventDefault();
-
-            const username = document.getElementById("username").value;
-            const description = document.getElementById("description").value;
-            const referral = document.getElementById("referral").value;
-            const fileInput = document.getElementById("image");
-
-            let imgURL = "https://i.postimg.cc/xdgtH5mP/Screenshot-2025-05-04-155458.png";
-            if (fileInput.files.length > 0) {
-                imgURL = URL.createObjectURL(fileInput.files[0]);
-            }
-
-            const newTestimony = { username, desc: description, img: imgURL, referral };
-
-            try {
-                const response = await fetch('data.json');
-                const testimonies = await response.json();
-                testimonies.unshift(newTestimony);
-                await saveTestimonies(testimonies);
-                fetchTestimonies();
-                e.target.reset();
-            } catch (error) {
-                console.error('Error saving testimony:', error);
-            }
-        });
-
-        async function saveTestimonies(testimonies) {
-            try {
-                await fetch('data.json', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(testimonies)
-                });
-            } catch (error) {
-                console.error('Error updating testimonies:', error);
-            }
         }
 
         fetchTestimonies();
