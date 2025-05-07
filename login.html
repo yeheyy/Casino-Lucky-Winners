@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <title>Login</title>
+    <title>Admin Login</title>
 </head>
 <body>
     <div class="container">
-        <h1>Login</h1>
+        <h1>Admin Login</h1>
         <div class="form-container">
             <form id="loginForm">
                 <label for="username">Username:</label>
@@ -27,13 +27,14 @@
     <script>
         document.getElementById("loginForm").addEventListener("submit", function(e) {
             e.preventDefault();
+
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
             if (username === "ggyy" && password === "Aa112233*") {
                 window.location.href = "index.html";
             } else {
-                alert("Invalid login credentials");
+                alert("Invalid username or password!");
             }
         });
     </script>
