@@ -1,79 +1,67 @@
-const http = require('http');
+const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
+const app = express();
 const PORT = 8080;
 
-const server = http.createServer((req, res) => {
-    console.log(`${req.method} ${req.url}`);
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static(__dirname));
 
-    if (req.method === 'GET') {
-        let filePath = path.join(__dirname, req.url === '/' ? 'visitors.html' : req.url);
-        const extname = String(path.extname(filePath)).toLowerCase();
-        const mimeTypes = {
-            '.html': 'text/html',
-            '.js': 'application/javascript',
-            '.css': 'text/css',
-            '.json': 'application/json'
-        };
-        const contentType = mimeTypes[extname] || 'application/octet-stream';
+const dataFilePath = path.join(__dirname, 'data.json');
 
-        fs.readFile(filePath, (err, content) => {
-            if (err) {
-                if (err.code === 'ENOENT') {
-                    res.writeHead(404, { 'Content-Type': 'text/html' });
-                    res.end('<h1>404 Not Found</h1>', 'utf-8');
-                } else {
-                    res.writeHead(500);
-                    res.end(`Server Error: ${err.code}`);
-                }
-            } else {
-                res.writeHead(200, { 'Content-Type': contentType });
-                res.end(content, 'utf-8');
-            }
-        });
-    }
-    
-    else if (req.method === 'POST' && req.url === '/add-content') {
-        let body = '';
-        req.on('data', chunk => {
-            body += chunk.toString();
-        });
-
-        req.on('end', () => {
-            const newContent = JSON.parse(body);
-            const dataFilePath = path.join(__dirname, 'data.json');
-
-            fs.readFile(dataFilePath, 'utf8', (err, data) => {
-                if (err) {
-                    console.error('Error reading data.json:', err);
-                    res.writeHead(500);
-                    res.end('Server error while reading data.json');
-                    return;
-                }
-
-                let contentArray = JSON.parse(data);
-                contentArray.push(newContent);
-
-                fs.writeFile(dataFilePath, JSON.stringify(contentArray, null, 2), 'utf8', err => {
-                    if (err) {
-                        console.error('Error writing to data.json:', err);
-                        res.writeHead(500);
-                        res.end('Server error while writing to data.json');
-                        return;
-                    }
-
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: 'Content added successfully' }));
-                });
-            });
-        });
-    } else {
-        res.writeHead(405);
-        res.end('Method Not Allowed');
-    }
+// Serve index.html as the main page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+// Serve login.html
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+// Serve visitors.html
+app.get('/visitors.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'visitors.html'));
+});
+
+// GET route to fetch data
+app.get('/data.json', (req, res) => {
+  fs.readFile(dataFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading data.json:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+    res.json(JSON.parse(data));
+  });
+});
+
+// POST route to add new content
+app.post('/add', (req, res) => {
+  const newContent = req.body;
+
+  fs.readFile(dataFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading data.json:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    let contentArray = JSON.parse(data);
+    contentArray.push(newContent);
+
+    fs.writeFile(dataFilePath, JSON.stringify(contentArray, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing to data.json:', err);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+      res.json({ message: 'Content added successfully' });
+    });
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
