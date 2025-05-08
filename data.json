@@ -1,1 +1,14 @@
-[]
+[
+    {
+        "username": "Player1",
+        "description": "Big win on slots!",
+        "referral": "https://casino.example.com/ref123",
+        "image": "uploads/win1.jpg"
+    },
+    {
+        "username": "Player2",
+        "description": "Amazing jackpot!",
+        "referral": "https://casino.example.com/ref456",
+        "image": "uploads/win2.jpg"
+    }
+]
