@@ -2,60 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <title>Casino Winners - Home</title>
+    <title>Casino Lucky Winners - Visitors</title>
 </head>
 <body>
     <div class="container">
-        <h1>Recent Casino Winners</h1>
-
-        <div class="menu" style="text-align: right;">
-            <button onclick="window.location.href='login.html'">Admin Only</button>
+        <h1>Welcome to Casino Lucky Winners</h1>
+        <div class="content-grid" id="content-grid">
+            <!-- Dynamic content will be loaded here -->
         </div>
-
-        <div class="testimonies-grid" id="testimonies-grid">
-            <!-- Testimonies will be rendered here dynamically -->
+        <div class="admin-link">
+            <a href="login.html" class="admin-button">Admin Only</a>
         </div>
-        <button class="show-more" onclick="showMore()">Show More</button>
     </div>
 
     <script>
-        async function fetchTestimonies() {
-            try {
-                const response = await fetch("data.json");
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error("Error fetching testimonies:", error);
-                return [];
-            }
-        }
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("/data.json")
+                .then(response => response.json())
+                .then(data => {
+                    const contentGrid = document.getElementById("content-grid");
+                    contentGrid.innerHTML = ""; // Clear existing content
 
-        async function renderTestimonies() {
-            const testimonies = await fetchTestimonies();
-            const grid = document.getElementById("testimonies-grid");
-            grid.innerHTML = "";
-
-            testimonies.forEach((testimony) => {
-                grid.innerHTML += `
-                    <div class="testimony">
-                        <img src="${testimony.img}" alt="Winning Photo">
-                        <h2>${testimony.username}</h2>
-                        <p>${testimony.desc}</p>
-                        <a href="#" class="cta-link">Big Win Here!</a>
-                    </div>
-                `;
-            });
-        }
-
-        function showMore() {
-            renderTestimonies();
-        }
-
-        renderTestimonies();
+                    data.forEach(item => {
+                        const contentCard = document.createElement("div");
+                        contentCard.className = "content-card";
+                        contentCard.innerHTML = `
+                            <h2>${item.title}</h2>
+                            <p>${item.description}</p>
+                            <img src="${item.image}" alt="${item.title}">
+                        `;
+                        contentGrid.appendChild(contentCard);
+                    });
+                })
+                .catch(error => console.log("Error loading content:", error));
+        });
     </script>
 </body>
 </html>
