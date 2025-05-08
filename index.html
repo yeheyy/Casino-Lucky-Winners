@@ -3,87 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Casino Lucky Winners</title>
     <link rel="stylesheet" href="styles.css">
-    <title>Casino Lucky Winners - Admin</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Admin Dashboard - Casino Lucky Winners</h1>
 
-        <div class="form-container">
-            <h2>Add New Content</h2>
-            <form id="add-content-form">
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" required>
+<div class="container">
+    <h1>Admin Page - Add New Content</h1>
 
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" required></textarea>
+    <form id="addContentForm" enctype="multipart/form-data">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
 
-                <label for="image">Image URL:</label>
-                <input type="text" id="image" name="image" required>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
 
-                <button type="submit">Add Content</button>
-            </form>
-        </div>
+        <label for="referral">Referral Link:</label>
+        <input type="text" id="referral" name="referral" required>
 
-        <div class="content-grid" id="content-grid">
-            <!-- Dynamic content will be loaded here -->
-        </div>
+        <label for="image">Upload Image:</label>
+        <input type="file" id="image" name="image" accept="image/*">
 
-        <div class="visitor-link">
-            <a href="visitors.html" class="visitor-button">Go to Visitor Page</a>
-        </div>
-    </div>
+        <button type="submit">Add Content</button>
+    </form>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const contentGrid = document.getElementById("content-grid");
-            const form = document.getElementById("add-content-form");
+    <div id="message"></div>
+</div>
 
-            // Fetch existing content
-            fetch("/data.json")
-                .then(response => response.json())
-                .then(data => {
-                    contentGrid.innerHTML = ""; // Clear existing content
+<script>
+    document.getElementById('addContentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
 
-                    data.forEach(item => {
-                        const contentCard = document.createElement("div");
-                        contentCard.className = "content-card";
-                        contentCard.innerHTML = `
-                            <h2>${item.title}</h2>
-                            <p>${item.description}</p>
-                            <img src="${item.image}" alt="${item.title}">
-                        `;
-                        contentGrid.appendChild(contentCard);
-                    });
-                })
-                .catch(error => console.log("Error loading content:", error));
-
-            // Handle form submission
-            form.addEventListener("submit", function(e) {
-                e.preventDefault();
-
-                const title = document.getElementById("title").value;
-                const description = document.getElementById("description").value;
-                const image = document.getElementById("image").value;
-
-                const newContent = { title, description, image };
-
-                fetch("/add", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(newContent),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    window.location.reload();
-                })
-                .catch(error => console.log("Error adding content:", error));
+        try {
+            const response = await fetch('/add', {
+                method: 'POST',
+                body: formData
             });
-        });
-    </script>
+
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+
+            if (result.imageUrl) {
+                console.log('Image URL:', result.imageUrl);
+            }
+
+        } catch (error) {
+            console.error('Error adding content:', error);
+            document.getElementById('message').textContent = 'Error adding content';
+        }
+    });
+</script>
+
 </body>
 </html>
