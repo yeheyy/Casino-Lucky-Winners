@@ -3,41 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Lucky Winners</title>
     <link rel="stylesheet" href="styles.css">
-    <title>Casino Lucky Winners - Visitors</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to Casino Lucky Winners</h1>
-        <div class="content-grid" id="content-grid">
-            <!-- Dynamic content will be loaded here -->
-        </div>
-        <div class="admin-link">
-            <a href="login.html" class="admin-button">Admin Only</a>
-        </div>
-    </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            fetch("/data.json")
-                .then(response => response.json())
-                .then(data => {
-                    const contentGrid = document.getElementById("content-grid");
-                    contentGrid.innerHTML = ""; // Clear existing content
+<div class="container">
+    <h1>Casino Lucky Winners</h1>
 
-                    data.forEach(item => {
-                        const contentCard = document.createElement("div");
-                        contentCard.className = "content-card";
-                        contentCard.innerHTML = `
-                            <h2>${item.title}</h2>
-                            <p>${item.description}</p>
-                            <img src="${item.image}" alt="${item.title}">
-                        `;
-                        contentGrid.appendChild(contentCard);
-                    });
-                })
-                .catch(error => console.log("Error loading content:", error));
+    <div class="testimonies-grid" id="testimoniesGrid"></div>
+</div>
+
+<script>
+    async function fetchData() {
+        try {
+            const response = await fetch('/data.json');
+            const data = await response.json();
+            displayTestimonies(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    function displayTestimonies(testimonies) {
+        const grid = document.getElementById('testimoniesGrid');
+        grid.innerHTML = '';
+
+        testimonies.forEach(item => {
+            const testimonyDiv = document.createElement('div');
+            testimonyDiv.classList.add('testimony');
+
+            testimonyDiv.innerHTML = `
+                <img src="${item.image}" alt="Winner Image">
+                <h3>${item.username}</h3>
+                <p>${item.description}</p>
+                <a href="${item.referral}" class="cta-link" target="_blank">Join Now</a>
+            `;
+
+            grid.appendChild(testimonyDiv);
         });
-    </script>
+    }
+
+    fetchData();
+</script>
+
 </body>
 </html>
