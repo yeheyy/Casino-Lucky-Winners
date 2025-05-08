@@ -2,103 +2,88 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <title>Admin Page - Casino Winners</title>
+    <title>Casino Lucky Winners - Admin</title>
 </head>
 <body>
     <div class="container">
-        <h1>Admin Dashboard</h1>
-        <div class="menu">
-            <a href="visitors.html">Go to Visitors Page</a>
-        </div>
+        <h1>Admin Dashboard - Casino Lucky Winners</h1>
+
         <div class="form-container">
-            <h2>Add New Winner</h2>
-            <form id="addForm">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required><br>
+            <h2>Add New Content</h2>
+            <form id="add-content-form">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
 
                 <label for="description">Description:</label>
-                <textarea id="description" name="description" required></textarea><br>
+                <textarea id="description" name="description" required></textarea>
 
-                <label for="referral">Referral Link:</label>
-                <input type="url" id="referral" name="referral" required><br>
-
-                <label>Upload Image:</label>
-                <input type="file" id="image" name="image" accept="image/*"><br>
+                <label for="image">Image URL:</label>
+                <input type="text" id="image" name="image" required>
 
                 <button type="submit">Add Content</button>
             </form>
         </div>
 
-        <div class="testimonies-grid" id="testimonies-grid">
-            <!-- Content will be dynamically rendered here -->
+        <div class="content-grid" id="content-grid">
+            <!-- Dynamic content will be loaded here -->
+        </div>
+
+        <div class="visitor-link">
+            <a href="visitors.html" class="visitor-button">Go to Visitor Page</a>
         </div>
     </div>
 
     <script>
-        document.getElementById("addForm").addEventListener("submit", async function(e) {
-            e.preventDefault();
-            const username = document.getElementById("username").value;
-            const description = document.getElementById("description").value;
-            const referral = document.getElementById("referral").value;
-            const imageFile = document.getElementById("image").files[0];
+        document.addEventListener("DOMContentLoaded", function() {
+            const contentGrid = document.getElementById("content-grid");
+            const form = document.getElementById("add-content-form");
 
-            if (imageFile) {
-                const reader = new FileReader();
-                reader.onload = async function() {
-                    const newContent = {
-                        username: username,
-                        desc: description,
-                        referral: referral,
-                        img: reader.result
-                    };
+            // Fetch existing content
+            fetch("/data.json")
+                .then(response => response.json())
+                .then(data => {
+                    contentGrid.innerHTML = ""; // Clear existing content
 
-                    try {
-                        const response = await fetch("/add", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify(newContent)
-                        });
-                        if (response.ok) {
-                            alert("Content added successfully!");
-                            window.location.reload();
-                        }
-                    } catch (err) {
-                        console.error("Error adding content: ", err);
-                    }
-                };
-                reader.readAsDataURL(imageFile);
-            }
+                    data.forEach(item => {
+                        const contentCard = document.createElement("div");
+                        contentCard.className = "content-card";
+                        contentCard.innerHTML = `
+                            <h2>${item.title}</h2>
+                            <p>${item.description}</p>
+                            <img src="${item.image}" alt="${item.title}">
+                        `;
+                        contentGrid.appendChild(contentCard);
+                    });
+                })
+                .catch(error => console.log("Error loading content:", error));
+
+            // Handle form submission
+            form.addEventListener("submit", function(e) {
+                e.preventDefault();
+
+                const title = document.getElementById("title").value;
+                const description = document.getElementById("description").value;
+                const image = document.getElementById("image").value;
+
+                const newContent = { title, description, image };
+
+                fetch("/add", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(newContent),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    window.location.reload();
+                })
+                .catch(error => console.log("Error adding content:", error));
+            });
         });
-
-        async function loadContent() {
-            try {
-                const response = await fetch("/data.json");
-                const contentData = await response.json();
-                const grid = document.getElementById("testimonies-grid");
-                grid.innerHTML = "";
-
-                contentData.forEach(content => {
-                    grid.innerHTML += `
-                        <div class="testimony">
-                            <img src="${content.img}" alt="Winning Photo">
-                            <h2>${content.username}</h2>
-                            <p>${content.desc}</p>
-                            <a href="${content.referral}" target="_blank">Big Win Here!</a>
-                        </div>
-                    `;
-                });
-            } catch (err) {
-                console.error("Error loading content: ", err);
-            }
-        }
-
-        loadContent();
     </script>
 </body>
 </html>
