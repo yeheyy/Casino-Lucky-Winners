@@ -83,7 +83,7 @@ h1 {
 }
 
 .testimony:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px);
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -125,20 +125,19 @@ h1 {
     background-color: #e0b800;
 }
 
-.admin-btn {
+.admin-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
     background-color: #ffcc00;
     color: #000;
     padding: 10px 20px;
-    border: none;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
-    border-radius: 8px;
     transition: background-color 0.3s;
-    position: absolute;
-    right: 20px;
-    top: 20px;
 }
 
-.admin-btn:hover {
+.admin-button:hover {
     background-color: #e0b800;
 }
